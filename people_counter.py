@@ -161,14 +161,14 @@ def people_counter():
 		# initialize the current status along with our list of bounding
 		# box rectangles returned by either (1) our object detector or
 		# (2) the correlation trackers
-		status = "Waiting"
+		status = "Esperando"
 		rects = []
 
 		# check to see if we should run a more computationally expensive
 		# object detection method to aid our tracker
 		if totalFrames % args["skip_frames"] == 0:
 			# set the status and initialize our new set of object trackers
-			status = "Detecting"
+			status = "Detectando"
 			trackers = []
 
 			# convert the frame to a blob and pass the blob through the
@@ -221,7 +221,7 @@ def people_counter():
 			for tracker in trackers:
 				# set the status of our system to be 'tracking' rather
 				# than 'waiting' or 'detecting'
-				status = "Tracking"
+				status = "Trackeando"
 
 				# update the tracker and grab the updated position
 				tracker.update(rgb)
@@ -242,11 +242,11 @@ def people_counter():
 		# moving 'up' or 'down'
 		if args["mode"] == "v":
 			cv2.line(frame, (0, H // 2), (W, H // 2), (0, 0, 255), 3)
-			cv2.putText(frame, "-Prediction border - Exit-", (int(W*0.1), H // 2),
+			cv2.putText(frame, "- BORDE DE PREDICCION - SALIDA -", (int(W*0.1), H // 2),
 				cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 2)
 		else:
 			cv2.line(frame, (W // 2, 0), (W // 2, H), (0, 0, 255), 3)
-			cv2.putText(frame, "-Prediction border - Entrance-", ( W // 2, int(H * 0.1)),
+			cv2.putText(frame, "- BORDE DE PREDICCION - ENTRADA -", ( W // 2, int(H * 0.1)),
 				cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 2)
 
 		# use the centroid tracker to associate the (1) old object
@@ -286,7 +286,7 @@ def people_counter():
 					# line, count the object
 					# move up or move left
 					if (args["mode"] == "v" and direction < -args.get("eps") and centroid[1] < H // 2) or (args["mode"] == "h" and direction < -args.get("eps") and centroid[0] < W // 2):
-						print("up/left")
+						print("arriba/izquierda")
 						totalUp += 1
 						date_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 						move_out.append(totalUp)
@@ -298,7 +298,7 @@ def people_counter():
 					# center line, count the object
 					# move down or move right
 					elif (args['mode'] == 'v' and direction > args.get("eps") and centroid[1] > H // 2) or (args["mode"] == "h" and direction > args.get("eps") and centroid[0] > W // 2):
-						print("down/right")
+						print("abajo/derecha")
 						totalDown += 1
 						date_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 						move_in.append(totalDown)
@@ -330,14 +330,14 @@ def people_counter():
 
 		# construct a tuple of information we will be displaying on the frame
 		info_status = [
-		("Exit", totalUp),
-		("Enter", totalDown),
-		("Status", status),
+		("Salieron", totalUp),
+		("Entraron", totalDown),
+		("Estado", status),
 		]
 
 		info_total = [
 		# ("Total people inside", ', '.join(map(str, total))),
-		("Total people inside", str(totalDown - totalUp)),
+		("Total personas dentro: ", str(totalDown - totalUp)),
 		]
 
 		# display the output
@@ -363,7 +363,7 @@ def people_counter():
 			writer.write(frame)
 
 		# show the output frame
-		cv2.imshow("Real-Time Monitoring/Analysis Window", frame)
+		cv2.imshow("Contador-Personas-LABOTEC", frame)
 		key = cv2.waitKey(1) & 0xFF
 		# if the `q` key was pressed, break from the loop
 		if key == ord("q"):
